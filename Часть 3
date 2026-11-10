@@ -1,0 +1,194 @@
+package pract11;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class TaskInfo {
+    public static void main(String[] args) {
+        // ФИО разработчика — впишите своё
+        String developer = "Иванов Иван Иванович";
+
+        // Дата и время получения задания — задаём вручную
+        // (год, месяц с 0, день, часы, минуты)
+        // Месяцы: 0 = январь, 1 = февраль, ..., 11 = декабрь
+        Date received = new Date(124, 9, 1, 9, 0); // 1 октября 2024, 09:00
+        // ↑ Обратите внимание: конструктор Date(int,int,int,...) устарел,
+        // но для учебной задачи допустим. Альтернатива — Calendar (см. ниже).
+
+        // Дата и время сдачи — текущие
+        Date submitted = new Date(); // = new Date(System.currentTimeMillis())
+
+        SimpleDateFormat sdf =
+                new SimpleDateFormat("dd.MM.yyyy HH:mm:ss (EEEE)");
+
+        System.out.println("Разработчик: " + developer);
+        System.out.println("Задание получено: " + sdf.format(received));
+        System.out.println("Задание сдано:    " + sdf.format(submitted));
+        System.out.println("Время на выполнение: " +
+                (submitted.getTime() - received.getTime()) / 1000 / 60 / 60 + " ч");
+    }
+}
+
+package pract11;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
+
+public class DateCompare {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        sdf.setLenient(false); // строгая проверка даты
+
+        System.out.print("Введите дату в формате дд.ММ.гггг: ");
+        String input = scanner.nextLine().trim();
+
+        try {
+            Date userDate = sdf.parse(input);
+            Date today = new Date();
+
+            // Обнуляем время у обеих дат, чтобы сравнивать только день
+            SimpleDateFormat dayOnly = new SimpleDateFormat("dd.MM.yyyy");
+            Date todayDay = dayOnly.parse(dayOnly.format(today));
+
+            System.out.println("Текущая дата: " + dayOnly.format(today));
+            System.out.println("Введённая:    " + dayOnly.format(userDate));
+
+            if (userDate.before(todayDay)) {
+                System.out.println("Введённая дата в прошлом.");
+            } else if (userDate.after(todayDay)) {
+                System.out.println("Введённая дата в будущем.");
+            } else {
+                System.out.println("Введённая дата совпадает с текущей.");
+            }
+        } catch (ParseException e) {
+            System.out.println("Ошибка: введите дату в формате дд.ММ.гггг, " +
+                    "например 05.11.2026");
+        }
+
+        scanner.close();
+    }
+}
+
+package pract11;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Student {
+    private String name;
+    private Date birthDate;
+
+    public Student(String name, Date birthDate) {
+        this.name = name;
+        this.birthDate = birthDate;
+    }
+
+    public String getName() { return name; }
+    public Date getBirthDate() { return birthDate; }
+
+    // toString() — полный формат
+    @Override
+    public String toString() {
+        return "Student{name='" + name + "', birthDate=" +
+                formatBirthDate("full") + "}";
+    }
+
+    // Метод возвращает дату рождения в нужном формате
+    // format: "short", "medium", "full"
+    public String formatBirthDate(String format) {
+        if (birthDate == null) return "не указана";
+
+        String pattern;
+        switch (format.toLowerCase()) {
+            case "short"  -> pattern = "dd.MM.yy";
+            case "medium" -> pattern = "dd MMM yyyy";
+            case "full"   -> pattern = "dd MMMM yyyy (EEEE)";
+            default       -> pattern = "dd.MM.yyyy";
+        }
+        return new SimpleDateFormat(pattern).format(birthDate);
+    }
+}
+
+package pract11;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+public class StudentTest {
+    public static void main(String[] args) throws ParseException {
+        SimpleDateFormat input = new SimpleDateFormat("dd.MM.yyyy");
+
+        Student s1 = new Student("Иванов Иван", input.parse("15.03.2004"));
+        Student s2 = new Student("Петрова Анна", input.parse("02.11.2003"));
+
+        System.out.println(s1);
+        System.out.println("  short:  " + s1.formatBirthDate("short"));
+        System.out.println("  medium: " + s1.formatBirthDate("medium"));
+        System.out.println("  full:   " + s1.formatBirthDate("full"));
+
+        System.out.println();
+        System.out.println(s2);
+        System.out.println("  short:  " + s2.formatBirthDate("short"));
+        System.out.println("  medium: " + s2.formatBirthDate("medium"));
+        System.out.println("  full:   " + s2.formatBirthDate("full"));
+    }
+}
+
+package pract11;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Scanner;
+
+public class UserDateInput {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Введите дату и время:");
+        System.out.print("Год:    ");
+        int year = Integer.parseInt(scanner.nextLine().trim());
+        System.out.print("Месяц (1-12): ");
+        int month = Integer.parseInt(scanner.nextLine().trim());
+        System.out.print("Число:  ");
+        int day = Integer.parseInt(scanner.nextLine().trim());
+        System.out.print("Часы (0-23): ");
+        int hour = Integer.parseInt(scanner.nextLine().trim());
+        System.out.print("Минуты: ");
+        int minute = Integer.parseInt(scanner.nextLine().trim());
+
+        // === Вариант 1: через Calendar ===
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month - 1); // в Calendar месяцы с 0!
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date dateFromCalendar = cal.getTime();
+
+        // === Вариант 2: через Date (миллисекунды с 1970) ===
+        // Проще всего — взять готовый Calendar и превратить в Date
+        Date dateFromDate = new Date(dateFromCalendar.getTime());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
+        System.out.println();
+        System.out.println("=== Результаты ===");
+        System.out.println("Date:     " + sdf.format(dateFromDate));
+        System.out.println("Calendar: " + sdf.format(dateFromCalendar));
+        System.out.println("Миллисекунды с 1970: " + dateFromCalendar.getTime());
+        System.out.println("Calendar.get(YEAR) = " + cal.get(Calendar.YEAR));
+        System.out.println("Calendar.get(MONTH) = " + cal.get(Calendar.MONTH)); // 0-based
+        System.out.println("Calendar.get(DAY_OF_MONTH) = " + cal.get(Calendar.DAY_OF_MONTH));
+        System.out.println("Calendar.get(HOUR_OF_DAY) = " + cal.get(Calendar.HOUR_OF_DAY));
+        System.out.println("Calendar.get(MINUTE) = " + cal.get(Calendar.MINUTE));
+
+        scanner.close();
+    }
+}
+
