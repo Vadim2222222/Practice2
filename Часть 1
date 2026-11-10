@@ -1,0 +1,536 @@
+package pract6;
+
+public interface Movable {
+    void moveUp();
+    void moveDown();
+    void moveLeft();
+    void moveRight();
+}
+
+package pract6;
+
+public class MovablePoint implements Movable {
+    int x;
+    int y;
+    int xSpeed;
+    int ySpeed;
+
+    public MovablePoint(int x, int y, int xSpeed, int ySpeed) {
+        this.x = x;
+        this.y = y;
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
+    }
+
+    @Override
+    public void moveUp() {
+        y += ySpeed;
+    }
+
+    @Override
+    public void moveDown() {
+        y -= ySpeed;
+    }
+
+    @Override
+    public void moveLeft() {
+        x -= xSpeed;
+    }
+
+    @Override
+    public void moveRight() {
+        x += xSpeed;
+    }
+
+    @Override
+    public String toString() {
+        return "MovablePoint{x=" + x + ", y=" + y +
+                ", xSpeed=" + xSpeed + ", ySpeed=" + ySpeed + "}";
+    }
+}
+
+package pract6;
+
+public class MovableCircle implements Movable {
+    private int radius;
+    private MovablePoint center;
+
+    public MovableCircle(int x, int y, int xSpeed, int ySpeed, int radius) {
+        this.center = new MovablePoint(x, y, xSpeed, ySpeed);
+        this.radius = radius;
+    }
+
+    @Override
+    public void moveUp() {
+        center.moveUp();
+    }
+
+    @Override
+    public void moveDown() {
+        center.moveDown();
+    }
+
+    @Override
+    public void moveLeft() {
+        center.moveLeft();
+    }
+
+    @Override
+    public void moveRight() {
+        center.moveRight();
+    }
+
+    @Override
+    public String toString() {
+        return "MovableCircle{radius=" + radius + ", center=" + center + "}";
+    }
+}
+
+package pract6;
+
+public class MovableRectangle implements Movable {
+    private MovablePoint topLeft;
+    private MovablePoint bottomRight;
+
+    public MovableRectangle(int x1, int y1, int x2, int y2,
+                            int xSpeed, int ySpeed) {
+        this.topLeft = new MovablePoint(x1, y1, xSpeed, ySpeed);
+        this.bottomRight = new MovablePoint(x2, y2, xSpeed, ySpeed);
+    }
+
+    private boolean isSpeedSame() {
+        return topLeft.xSpeed == bottomRight.xSpeed
+                && topLeft.ySpeed == bottomRight.ySpeed;
+    }
+
+    @Override
+    public void moveUp() {
+        if (isSpeedSame()) {
+            topLeft.moveUp();
+            bottomRight.moveUp();
+        }
+    }
+
+    @Override
+    public void moveDown() {
+        if (isSpeedSame()) {
+            topLeft.moveDown();
+            bottomRight.moveDown();
+        }
+    }
+
+    @Override
+    public void moveLeft() {
+        if (isSpeedSame()) {
+            topLeft.moveLeft();
+            bottomRight.moveLeft();
+        }
+    }
+
+    @Override
+    public void moveRight() {
+        if (isSpeedSame()) {
+            topLeft.moveRight();
+            bottomRight.moveRight();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "MovableRectangle{topLeft=" + topLeft +
+                ", bottomRight=" + bottomRight + "}";
+    }
+}
+
+package pract6;
+
+public class RectangleTest {
+    public static void main(String[] args) {
+        MovableRectangle rect = new MovableRectangle(0, 0, 10, 10, 2, 3);
+        System.out.println("До:    " + rect);
+        rect.moveRight();
+        rect.moveDown();
+        System.out.println("После: " + rect);
+    }
+}
+
+package pract6;
+
+public interface Nameable {
+    String getName();
+}
+
+package pract6;
+
+public class Planet implements Nameable {
+    private String name;
+
+    public Planet(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+}
+
+package pract6;
+
+public class Car implements Nameable {
+    private String name;
+
+    public Car(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+}
+
+package pract6;
+
+public class Animal implements Nameable {
+    private String name;
+
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+}
+
+package pract6;
+
+public class NameableTest {
+    public static void main(String[] args) {
+        Nameable[] objects = {
+                new Planet("Земля"),
+                new Car("Toyota Camry"),
+                new Animal("Тигр")
+        };
+        for (Nameable obj : objects) {
+            System.out.println(obj.getClass().getSimpleName() + ": " + obj.getName());
+        }
+    }
+}
+
+package pract6;
+
+public interface Priceable {
+    double getPrice();
+}
+
+package pract6;
+
+public class BookPriced implements Priceable {
+    private String title;
+    private double price;
+
+    public BookPriced(String title, double price) {
+        this.title = title;
+        this.price = price;
+    }
+
+    @Override
+    public double getPrice() {
+        return price;
+    }
+
+    @Override
+    public String toString() {
+        return "Книга \"" + title + "\"";
+    }
+}
+
+package pract6;
+
+public class Phone implements Priceable {
+    private String model;
+    private double price;
+
+    public Phone(String model, double price) {
+        this.model = model;
+        this.price = price;
+    }
+
+    @Override
+    public double getPrice() {
+        return price;
+    }
+
+    @Override
+    public String toString() {
+        return "Телефон " + model;
+    }
+}
+
+package pract6;
+
+public class PriceableTest {
+    public static void main(String[] args) {
+        Priceable[] items = {
+                new BookPriced("Java. Полное руководство", 3500.0),
+                new Phone("Samsung Galaxy S24", 75000.0)
+        };
+        for (Priceable p : items) {
+            System.out.println(p + " — цена: " + p.getPrice() + " руб.");
+        }
+    }
+}
+
+package pract6;
+
+public class Point {
+    protected int x;
+    protected int y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
+}
+
+package pract6;
+
+public class Circle {
+    protected Point center;
+    protected int radius;
+
+    public Circle(int x, int y, int radius) {
+        this.center = new Point(x, y);
+        this.radius = radius;
+    }
+}
+
+package pract6;
+
+public class MovablePointV2 extends Point implements Movable {
+    private int xSpeed;
+    private int ySpeed;
+
+    public MovablePointV2(int x, int y, int xSpeed, int ySpeed) {
+        super(x, y);
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
+    }
+
+    @Override
+    public void moveUp() { y += ySpeed; }
+
+    @Override
+    public void moveDown() { y -= ySpeed; }
+
+    @Override
+    public void moveLeft() { x -= xSpeed; }
+
+    @Override
+    public void moveRight() { x += xSpeed; }
+
+    @Override
+    public String toString() {
+        return "MovablePointV2{" + super.toString() +
+                ", xSpeed=" + xSpeed + ", ySpeed=" + ySpeed + "}";
+    }
+}
+
+package pract6;
+
+public class MovableCircleV2 extends Circle implements Movable {
+    private int xSpeed;
+    private int ySpeed;
+
+    public MovableCircleV2(int x, int y, int radius, int xSpeed, int ySpeed) {
+        super(x, y, radius);
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
+    }
+
+    @Override
+    public void moveUp() { center.y += ySpeed; }
+
+    @Override
+    public void moveDown() { center.y -= ySpeed; }
+
+    @Override
+    public void moveLeft() { center.x -= xSpeed; }
+
+    @Override
+    public void moveRight() { center.x += xSpeed; }
+
+    @Override
+    public String toString() {
+        return "MovableCircleV2{center=" + center + ", radius=" + radius + "}";
+    }
+}
+
+package pract6;
+
+public interface Printable {
+    void print();
+}
+
+package pract6;
+
+public class Book implements Printable {
+    private String title;
+    private String author;
+
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+    }
+
+    @Override
+    public void print() {
+        System.out.println("Книга: \"" + title + "\", автор: " + author);
+    }
+}
+
+package pract6;
+
+public class Shop implements Printable {
+    private String name;
+    private String address;
+
+    public Shop(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
+    @Override
+    public void print() {
+        System.out.println("Магазин: \"" + name + "\", адрес: " + address);
+    }
+}
+
+package pract6;
+
+public class PrintableTest {
+    public static void main(String[] args) {
+        Printable[] items = {
+                new Book("Война и мир", "Л. Н. Толстой"),
+                new Shop("Книжный мир", "ул. Ленина, 10"),
+                new Book("Мастер и Маргарита", "М. А. Булгаков"),
+                new Shop("ТехноМаркет", "пр. Мира, 25")
+        };
+        for (Printable p : items) {
+            p.print();
+        }
+    }
+}
+
+package pract6;
+
+public class Computer implements Printable, Priceable {
+    private String brand;
+    private String model;
+    private String cpu;
+    private int ramGb;
+    private double price;
+
+    public Computer(String brand, String model, String cpu,
+                    int ramGb, double price) {
+        this.brand = brand;
+        this.model = model;
+        this.cpu = cpu;
+        this.ramGb = ramGb;
+        this.price = price;
+    }
+
+    public String getBrand() { return brand; }
+
+    @Override
+    public double getPrice() { return price; }
+
+    @Override
+    public void print() {
+        System.out.printf("%s %s | CPU: %s | RAM: %d ГБ | Цена: %.2f руб.%n",
+                brand, model, cpu, ramGb, price);
+    }
+}
+
+package pract6;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class ComputerShopApp {
+    private static final List<Computer> catalog = new ArrayList<>();
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        initCatalog();
+        boolean running = true;
+        while (running) {
+            printMenu();
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1" -> showAll();
+                case "2" -> searchByBrand();
+                case "3" -> filterByMaxPrice();
+                case "0" -> running = false;
+                default -> System.out.println("Неверный пункт меню.");
+            }
+        }
+        System.out.println("Выход из магазина. До свидания!");
+    }
+
+    private static void initCatalog() {
+        catalog.add(new Computer("Apple", "MacBook Pro 14", "Apple M3 Pro", 18, 249990));
+        catalog.add(new Computer("ASUS", "ROG Zephyrus G14", "AMD Ryzen 9", 32, 189990));
+        catalog.add(new Computer("Lenovo", "ThinkPad X1 Carbon", "Intel Core i7", 16, 159990));
+        catalog.add(new Computer("HP", "Pavilion 15", "Intel Core i5", 8, 64990));
+        catalog.add(new Computer("Apple", "MacBook Air 13", "Apple M2", 8, 114990));
+    }
+
+    private static void printMenu() {
+        System.out.println("\n=== Интернет-магазин компьютерной техники ===");
+        System.out.println("1. Показать весь каталог");
+        System.out.println("2. Найти по бренду");
+        System.out.println("3. Фильтр по максимальной цене");
+        System.out.println("0. Выход");
+        System.out.print("Ваш выбор: ");
+    }
+
+    private static void showAll() {
+        System.out.println("\n--- Каталог ---");
+        catalog.forEach(Computer::print);
+    }
+
+    private static void searchByBrand() {
+        System.out.print("Введите бренд: ");
+        String brand = scanner.nextLine().trim();
+        boolean found = false;
+        for (Computer c : catalog) {
+            if (c.getBrand().equalsIgnoreCase(brand)) {
+                c.print();
+                found = true;
+            }
+        }
+        if (!found) System.out.println("Ничего не найдено.");
+    }
+
+    private static void filterByMaxPrice() {
+        System.out.print("Введите максимальную цену: ");
+        try {
+            double max = Double.parseDouble(scanner.nextLine().trim());
+            catalog.stream()
+                    .filter(c -> c.getPrice() <= max)
+                    .forEach(Computer::print);
+        } catch (NumberFormatException e) {
+            System.out.println("Ошибка: введите число.");
+        }
+    }
+}
